@@ -1,7 +1,19 @@
+from contextlib import asynccontextmanager
+
 from config import settings
+from database import init_db
 from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from suppliers.router.products_router import router as products_router
+from suppliers.router.suppliers_router import router as suppliers_router
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()
+    yield
+
 
 app = FastAPI(
     title=settings.app_name,
@@ -9,6 +21,7 @@ app = FastAPI(
     debug=settings.debug,
     docs_url="/api/docs",
     redoc_url="/api/redoc",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -20,6 +33,9 @@ app.add_middleware(
 )
 
 app.mount("/static", StaticFiles(directory=settings.static_dir), name="static")
+
+app.include_router(suppliers_router)
+app.include_router(products_router)
 
 
 @app.get("/")
