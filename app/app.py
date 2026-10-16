@@ -1,5 +1,5 @@
 from config import settings
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
@@ -25,3 +25,8 @@ app.mount("/static", StaticFiles(directory=settings.static_dir), name="static")
 @app.get("/")
 def root():
     return {"message": f"Welcome to {settings.app_name}", "docs": "/api/docs"}
+
+
+@app.get("/health", status_code=status.HTTP_200_OK)
+def health_check():
+    return {"status": "ok"}
