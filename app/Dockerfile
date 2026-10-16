@@ -16,4 +16,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["uv", "run", "--no-sync", "uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "info"]%
+CMD ["uv", "run", "--no-sync", "uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "info"]
