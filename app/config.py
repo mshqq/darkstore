@@ -1,11 +1,15 @@
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+BASE_DIR = Path(__file__).resolve().parents[0]
 
 
 class Settings(BaseSettings):
     app_name: str = "DarkStore API"
-    debug: bool = True
+    debug: bool = False
 
-    database_url: str = ""
+    database_url: str
 
     cors_origins: list[str] = [
         "http://localhost:5173",
@@ -14,12 +18,16 @@ class Settings(BaseSettings):
         "http://127.0.0.1:3000",
     ]
 
-    static_dir: str = "static"
-    images_dir: str = "static/images"
+    static_dir: Path = BASE_DIR / "static"
+    images_dir: Path = BASE_DIR / "static" / "images"
 
-    model_config: SettingsConfigDict = SettingsConfigDict(
-        env_file=".env", env_file_encoding="utf-8", extra="ignore"
+    model_config = SettingsConfigDict(
+        env_file=BASE_DIR / ".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
     )
 
 
 settings = Settings()
+
+settings.images_dir.mkdir(parents=True, exist_ok=True)

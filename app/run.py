@@ -1,7 +1,16 @@
 import uvicorn
 from config import settings
 
-if __name__ == "__main__":
+
+def main():
     uvicorn.run(
-        "app:app", host="0.0.0.0", port=8000, reload=settings.debug, log_level="info"
+        "app:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=settings.debug,
+        log_level="info",
     )
+
+
+if __name__ == "__main__":
+    main()
