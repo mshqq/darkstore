@@ -10,15 +10,17 @@ export default function StockPage() {
   console.log(data);
 
   if (isPending) {
-    return <p>Загрузка поставщиков...</p>;
+    return <p>Загрузка остатков...</p>;
   }
 
   if (isError) {
-    return <p>Не удалось загрузить поставщиков.</p>;
+    return <p>Не удалось загрузить остатки.</p>;
   }
 
-  const filteredStock = (data ?? []).filter(item =>
-    item.name.toLowerCase().includes(search.toLowerCase())
+  const filteredStock = (data ?? []).filter(
+    item =>
+      item.name.toLowerCase().includes(search.toLowerCase()) ||
+      item.sku.toLowerCase().includes(search.toLowerCase())
   );
 
   const columns = [
