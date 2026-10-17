@@ -6,6 +6,7 @@ from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from suppliers.router.product_router import router as products_router
+from suppliers.router.stock_router import router as stock_router
 from suppliers.router.supplier_router import router as suppliers_router
 
 
@@ -36,6 +37,7 @@ app.mount("/static", StaticFiles(directory=settings.static_dir), name="static")
 
 app.include_router(suppliers_router)
 app.include_router(products_router)
+app.include_router(stock_router)
 
 
 @app.get("/")
