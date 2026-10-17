@@ -5,8 +5,8 @@ from database import init_db
 from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from suppliers.router.products_router import router as products_router
-from suppliers.router.suppliers_router import router as suppliers_router
+from suppliers.router.product_router import router as products_router
+from suppliers.router.supplier_router import router as suppliers_router
 
 
 @asynccontextmanager
