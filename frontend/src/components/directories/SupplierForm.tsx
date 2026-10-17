@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { App, Button, Flex, Form, Input } from 'antd';
 import { createSupplier } from '../../api/suppliers';
 import type { SupplierCreate } from '../../types/supplier';
+import { getApiErrorMessage } from '../../utils/apiError';
 
 type SupplierFormProps = {
   onCancel: () => void;
@@ -22,16 +23,7 @@ export default function SupplierForm({ onCancel, onSuccess }: SupplierFormProps)
       onSuccess();
     },
     onError: (error: unknown) => {
-      const detail =
-        typeof error === 'object' && error !== null && 'response' in error
-          ? (
-              error as {
-                response?: { data?: { detail?: unknown } };
-              }
-            ).response?.data?.detail
-          : undefined;
-
-      message.error(typeof detail === 'string' ? detail : 'Не удалось добавить поставщика');
+      message.error(getApiErrorMessage(error, 'Не удалось добавить поставщика'));
     }
   });
 

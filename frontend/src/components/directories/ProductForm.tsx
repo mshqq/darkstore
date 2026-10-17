@@ -5,6 +5,7 @@ import { EMPTY_SUPPLIERS } from '../../constants/suppliers';
 import { UNITS } from '../../constants/units';
 import { useSuppliers } from '../../hooks/useSuppliers';
 import type { ProductCreate } from '../../types/product';
+import { getApiErrorMessage } from '../../utils/apiError';
 
 type ProductFormProps = {
   onCancel: () => void;
@@ -29,16 +30,7 @@ export default function ProductForm({ onCancel, onSuccess }: ProductFormProps) {
       onSuccess();
     },
     onError: (error: unknown) => {
-      const detail =
-        typeof error === 'object' && error !== null && 'response' in error
-          ? (
-              error as {
-                response?: { data?: { detail?: unknown } };
-              }
-            ).response?.data?.detail
-          : undefined;
-
-      message.error(typeof detail === 'string' ? detail : 'Не удалось добавить товар');
+      message.error(getApiErrorMessage(error, 'Не удалось добавить товар'));
     }
   });
 
