@@ -1,6 +1,6 @@
+import apiClient from '@/api/client';
+import type { Product, ProductCreate } from '@/types/product';
 import axios from 'axios';
-import type { Product, ProductCreate } from '../types/product';
-import apiClient from './client';
 
 export async function getProducts(): Promise<Product[]> {
   try {

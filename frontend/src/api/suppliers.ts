@@ -1,6 +1,6 @@
+import apiClient from '@/api/client';
+import type { Supplier, SupplierCreate } from '@/types/supplier';
 import axios from 'axios';
-import type { Supplier, SupplierCreate } from '../types/supplier';
-import apiClient from './client';
 
 export async function getSuppliers(): Promise<Supplier[]> {
   try {
