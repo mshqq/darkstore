@@ -1,5 +1,5 @@
+import { getSuppliers } from '@/api/suppliers';
 import { useQuery } from '@tanstack/react-query';
-import { getSuppliers } from '../api/suppliers';
 
 export function useSuppliers() {
   return useQuery({ queryKey: ['suppliers'], queryFn: getSuppliers });

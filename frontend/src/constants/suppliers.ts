@@ -1,3 +1,3 @@
-import type { Product } from '../types/product';
+import type { Supplier } from '@/types/supplier';
 
-export const EMPTY_SUPPLIERS: Product[] = [];
+export const EMPTY_SUPPLIERS: Supplier[] = [];
