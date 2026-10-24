@@ -1,4 +1,4 @@
-import type { Unit } from './units';
+import type { Unit } from '@/types/units';
 
 export type Product = {
   id: number;
