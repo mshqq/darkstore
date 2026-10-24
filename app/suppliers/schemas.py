@@ -1,6 +1,7 @@
 from datetime import datetime
+from decimal import Decimal
 
-from models import Unit
+from models import Status, Unit
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
@@ -58,5 +59,39 @@ class StockRead(BaseModel):
     reserved: int
     available: int
     is_low: bool
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class OrderItemIn(BaseModel):
+    product_id: int = Field(gt=0)
+    qty: int = Field(gt=0)
+    price: Decimal = Field(ge=0, decimal_places=2)
+
+
+class OrderItemRead(BaseModel):
+    id: int
+    product_id: int
+    qty: int
+    price: Decimal
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class PurchaseOrderCreate(BaseModel):
+    supplier_id: int = Field(gt=0)
+    items: list[OrderItemIn] = Field(min_length=1)
+    comment: str | None = Field(default=None, max_length=500)
+
+
+class PurchaseOrderRead(BaseModel):
+    id: int
+    supplier_id: int
+    status: Status
+    comment: str | None
+    created_at: datetime
+    sent_at: datetime | None
+    received_at: datetime | None
+    items: list[OrderItemRead]
 
     model_config = ConfigDict(from_attributes=True)

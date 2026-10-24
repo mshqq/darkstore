@@ -68,7 +68,7 @@ class Product(Base):
             Unit,
             native_enum=False,
             length=8,
-            values_callable=lambda e: [m.value for m in e],
+            values_callable=lambda e: [m.value for m in e],  # type: ignore
         ),
         default=Unit.PIECE,
         nullable=False,
@@ -148,7 +148,7 @@ class PurchaseOrder(Base):
             Status,
             native_enum=False,
             length=10,
-            values_callable=lambda e: [m.value for m in e],
+            values_callable=lambda e: [m.value for m in e],  # type: ignore
         ),
         default=Status.draft,
         nullable=False,
