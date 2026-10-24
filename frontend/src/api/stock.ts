@@ -1,6 +1,6 @@
+import apiClient from '@/api/client';
+import type { StockItem } from '@/types/stock';
 import axios from 'axios';
-import type { StockItem } from '../types/stock';
-import apiClient from './client';
 
 export async function getStock(onlyLow: boolean) {
   try {
