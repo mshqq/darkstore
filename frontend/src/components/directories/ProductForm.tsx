@@ -1,11 +1,23 @@
+import { createProduct } from '@/api/products';
+import { EMPTY_SUPPLIERS } from '@/constants/suppliers';
+import { UNITS } from '@/constants/units';
+import { useSuppliers } from '@/hooks/useSuppliers';
+import type { ProductCreate } from '@/types/product';
+import { getApiErrorMessage } from '@/utils/apiError';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { App, Button, Flex, Form, Input, InputNumber, Select } from 'antd';
-import { createProduct } from '../../api/products';
-import { EMPTY_SUPPLIERS } from '../../constants/suppliers';
-import { UNITS } from '../../constants/units';
-import { useSuppliers } from '../../hooks/useSuppliers';
-import type { ProductCreate } from '../../types/product';
-import { getApiErrorMessage } from '../../utils/apiError';
+import {
+  Alert,
+  App,
+  Button,
+  Col,
+  Divider,
+  Flex,
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Select
+} from 'antd';
 
 type ProductFormProps = {
   onCancel: () => void;
@@ -19,7 +31,7 @@ export default function ProductForm({ onCancel, onSuccess }: ProductFormProps) {
   const queryClient = useQueryClient();
   const { message } = App.useApp();
 
-  const { data: suppliers = EMPTY_SUPPLIERS, isPending, isError } = useSuppliers();
+  const suppliersQuery = useSuppliers();
 
   const mutation = useMutation({
     mutationFn: createProduct,
@@ -34,11 +46,7 @@ export default function ProductForm({ onCancel, onSuccess }: ProductFormProps) {
     }
   });
 
-  if (isPending) return;
-
-  if (isError) {
-    return <p>Не удалось загрузить товары.</p>;
-  }
+  const suppliers = suppliersQuery.data ?? EMPTY_SUPPLIERS;
 
   const handleSubmit = (values: ProductCreate) => {
     mutation.mutate({
@@ -47,51 +55,90 @@ export default function ProductForm({ onCancel, onSuccess }: ProductFormProps) {
     });
   };
   return (
-    <Form
+    <Form<ProductCreate>
       form={form}
       layout="vertical"
+      requiredMark="optional"
+      disabled={mutation.isPending}
       onFinish={handleSubmit}
+      initialValues={{ unit: unitOptions[0]?.value, min_level: 0 }}
     >
+      {suppliersQuery.isError && (
+        <Alert
+          type="warning"
+          showIcon
+          title="Не удалось загрузить поставщиков"
+          description="Товар можно создать и без поставщика по умолчанию."
+          action={
+            <Button
+              size="small"
+              onClick={() => suppliersQuery.refetch()}
+            >
+              Повторить
+            </Button>
+          }
+          style={{ marginBottom: 16 }}
+        />
+      )}
       <Form.Item
         label="Название"
         name="name"
-        rules={[{ required: true, message: 'Введите название' }]}
+        rules={[{ required: true, whitespace: true, message: 'Введите название' }]}
       >
-        <Input maxLength={255} />
-      </Form.Item>
-
-      <Form.Item
-        label="Артикул"
-        name="sku"
-        rules={[{ required: true, message: 'Введите артикул' }]}
-      >
-        <Input maxLength={64} />
-      </Form.Item>
-
-      <Form.Item
-        label="Единица измерения"
-        name="contact_person"
-        rules={[{ required: true, message: 'Выберите единицу измерения' }]}
-      >
-        <Select
-          defaultValue={UNITS[0]}
-          options={unitOptions}
+        <Input
+          maxLength={255}
+          placeholder="Например, Молоко 3.2%"
         />
       </Form.Item>
+
+      <Row gutter={12}>
+        <Col
+          xs={24}
+          sm={12}
+        >
+          <Form.Item
+            label="Артикул"
+            name="sku"
+            rules={[{ required: true, whitespace: true, message: 'Введите артикул' }]}
+          >
+            <Input
+              maxLength={64}
+              placeholder="MLK-032"
+            />
+          </Form.Item>
+        </Col>
+
+        <Col
+          xs={24}
+          sm={12}
+        >
+          <Form.Item
+            label="Единица измерения"
+            name="unit"
+            rules={[{ required: true, message: 'Выберите единицу измерения' }]}
+          >
+            <Select options={unitOptions} />
+          </Form.Item>
+        </Col>
+      </Row>
 
       <Form.Item
         label="Минимальный остаток"
         name="min_level"
+        tooltip='Когда остаток опустится до этого значения, товар будет отмечен как "Мало"'
         rules={[
           { required: true, message: 'Введите минимальный остаток' },
           {
             type: 'number',
             min: 0,
-            message: 'Минимальный остаток должен быть больше или равен нулю'
+            message: 'Минимальный остаток не может быть отрицательным'
           }
         ]}
       >
-        <InputNumber />
+        <InputNumber
+          min={0}
+          style={{ width: '100%' }}
+        />
       </Form.Item>
 
       <Form.Item
@@ -99,20 +146,28 @@ export default function ProductForm({ onCancel, onSuccess }: ProductFormProps) {
         name="default_supplier_id"
       >
         <Select
-          disabled={isError}
-          loading={isPending}
           allowClear
+          loading={suppliersQuery.isPending}
+          disabled={suppliersQuery.isError}
           showSearch={{ optionFilterProp: 'label' }}
-          placeholder={isError ? 'Не удалось загрузить' : 'Не выбран'}
+          placeholder={suppliersQuery.isError ? 'Не удалось загрузить' : 'Не выбран'}
           options={suppliers.map(s => ({ value: s.id, label: s.name }))}
         />
       </Form.Item>
 
+      <Divider style={{ margin: '8px 0 16px' }} />
+
       <Flex
         justify="flex-end"
-        gap="small"
+        gap={8}
       >
-        <Button onClick={onCancel}>Отмена</Button>
+        <Button
+          htmlType="button"
+          onClick={onCancel}
+          disabled={false}
+        >
+          Отмена
+        </Button>
 
         <Button
           type="primary"
