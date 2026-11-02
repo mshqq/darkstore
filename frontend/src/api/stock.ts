@@ -2,7 +2,7 @@ import apiClient from '@/api/client';
 import type { StockItem } from '@/types/stock';
 import axios from 'axios';
 
-export async function getStock(onlyLow: boolean) {
+export async function getStock(onlyLow: boolean): Promise<StockItem[]> {
   try {
     const res = await apiClient.get<StockItem[]>('/stock', { params: { only_low: onlyLow } });
 
@@ -11,5 +11,6 @@ export async function getStock(onlyLow: boolean) {
     if (axios.isAxiosError(err)) {
       console.error('Ошибка запроса: ', err.response?.status);
     }
+    throw err;
   }
 }

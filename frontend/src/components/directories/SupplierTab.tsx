@@ -1,3 +1,4 @@
+import EditSupplierForm from '@/components/directories/EditSupplierForm';
 import SupplierForm from '@/components/directories/SupplierForm';
 import { EMPTY_SUPPLIERS } from '@/constants/suppliers';
 import { useSuppliers } from '@/hooks/useSuppliers';
@@ -13,6 +14,8 @@ export default function SupplierTab() {
   const supplierQuery = useSuppliers();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [search, setSearch] = useState('');
+
+  const [editingSupplier, setEditingSupplier] = useState<Supplier | null>(null);
 
   const suppliers = supplierQuery.data ?? EMPTY_SUPPLIERS;
 
@@ -74,6 +77,13 @@ export default function SupplierTab() {
       onFilter: (value, supplier) => supplier.is_active === value,
       render: (isActive: boolean) => (
         <Tag color={isActive ? 'green' : 'default'}>{isActive ? 'Активен' : 'Неактивен'}</Tag>
+      )
+    },
+    {
+      title: 'Действия',
+      key: 'actions',
+      render: (_: unknown, supplier: Supplier) => (
+        <Button onClick={() => setEditingSupplier(supplier)}>Редактировать</Button>
       )
     }
   ];
@@ -153,6 +163,23 @@ export default function SupplierTab() {
           onCancel={() => setIsModalOpen(false)}
           onSuccess={() => setIsModalOpen(false)}
         />
+      </Modal>
+
+      <Modal
+        title="Редактировать поставщика"
+        open={editingSupplier !== null}
+        footer={false}
+        destroyOnHidden
+        onCancel={() => setEditingSupplier(null)}
+      >
+        {editingSupplier !== null && (
+          <EditSupplierForm
+            key={editingSupplier.id}
+            supplier={editingSupplier}
+            onCancel={() => setEditingSupplier(null)}
+            onSuccess={() => setEditingSupplier(null)}
+          />
+        )}
       </Modal>
     </Flex>
   );

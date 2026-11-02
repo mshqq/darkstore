@@ -6,20 +6,10 @@ import { usePurchaseOrders } from '@/hooks/usePurchaseOrders';
 import { useSuppliers } from '@/hooks/useSuppliers';
 import type { PurchaseOrder, PurchaseOrderStatus } from '@/types/purchaseOrder';
 import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
-import {
-  Alert,
-  Button,
-  Card,
-  Flex,
-  message,
-  Modal,
-  Popconfirm,
-  Table,
-  Tag,
-  Typography
-} from 'antd';
+import { Alert, Button, Card, Flex, Modal, Popconfirm, Table, Tag, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function OrdersPage() {
   const ordersQuery = usePurchaseOrders();
@@ -27,6 +17,8 @@ export default function OrdersPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data: suppliers = EMPTY_SUPPLIERS } = useSuppliers();
+
+  const navigate = useNavigate();
 
   const supplierNames = new Map(suppliers.map(supplier => [supplier.id, supplier.name]));
 
@@ -37,15 +29,10 @@ export default function OrdersPage() {
       : undefined;
 
   const handleAction = (order: PurchaseOrder) => {
-    const options = {
-      onSuccess: () => message.success(`Закупка №${order.id} обновлена`),
-      onError: () => message.error(`Не удалось обновить закупку №${order.id}`)
-    };
-
     if (order.status === 'draft') {
-      sendMutation.mutate(order.id, options);
+      sendMutation.mutate(order.id);
     } else if (order.status === 'sent') {
-      receiveMutation.mutate(order.id, options);
+      receiveMutation.mutate(order.id);
     }
   };
 
@@ -56,7 +43,11 @@ export default function OrdersPage() {
       key: 'id',
       width: 80,
       sorter: (a, b) => a.id - b.id,
-      render: (id: number) => <Typography.Text strong>#{id}</Typography.Text>
+      render: (id: number) => (
+        <Link to={`/orders/${id}`}>
+          <Typography.Text strong>#{id}</Typography.Text>
+        </Link>
+      )
     },
     {
       title: 'Поставщик',
@@ -99,20 +90,22 @@ export default function OrdersPage() {
         const actionLabel = statusConfig[order.status]?.actionLabel;
         if (!actionLabel) return null;
         return (
-          <Popconfirm
-            title={`${actionLabel}?`}
-            description={`Закупка №${order.id}`}
-            okText="Да"
-            cancelText="Отмена"
-            onConfirm={() => handleAction(order)}
-          >
-            <Button
-              size="small"
-              loading={pendingOrderId === order.id}
+          <div onClick={event => event.stopPropagation()}>
+            <Popconfirm
+              title={`${actionLabel}?`}
+              description={`Закупка №${order.id}`}
+              okText="Да"
+              cancelText="Отмена"
+              onConfirm={() => handleAction(order)}
             >
-              {actionLabel}
-            </Button>
-          </Popconfirm>
+              <Button
+                size="small"
+                loading={pendingOrderId === order.id}
+              >
+                {actionLabel}
+              </Button>
+            </Popconfirm>
+          </div>
         );
       }
     }
@@ -182,6 +175,10 @@ export default function OrdersPage() {
           pagination={{ pageSize: 10, hideOnSinglePage: true, showSizeChanger: false }}
           locale={{ emptyText: 'Закупок пока нет' }}
           scroll={{ x: 'max-content' }}
+          onRow={order => ({
+            onClick: () => navigate(`/orders/${order.id}`),
+            style: { cursor: 'pointer' }
+          })}
         />
       </Card>
 

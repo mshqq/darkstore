@@ -57,6 +57,21 @@ def create_order(db: Session, data: PurchaseOrderCreate) -> PurchaseOrder:
     return order
 
 
+def get_order(db: Session, order_id: int) -> PurchaseOrder:
+    statement = (
+        select(PurchaseOrder)
+        .where(PurchaseOrder.id == order_id)
+        .options(selectinload(PurchaseOrder.items))
+    )
+
+    order = db.scalars(statement).first()
+
+    if order is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Закупка не найдена")
+
+    return order
+
+
 def list_orders(db: Session) -> list[PurchaseOrder]:
     statement = (
         select(PurchaseOrder)

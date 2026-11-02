@@ -4,6 +4,7 @@ import { useCreatePurchaseOrder } from '@/hooks/useCreatePurchaseOrder';
 import { useProducts } from '@/hooks/useProducts';
 import { useSuppliers } from '@/hooks/useSuppliers';
 import type { PurchaseOrderFormValues } from '@/types/purchaseOrder';
+import { formatMoney } from '@/utils/money';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import {
   Alert,
@@ -26,13 +27,6 @@ type PurchaseOrderFormProps = {
   onCancel: () => void;
   onSuccess: () => void;
 };
-
-const moneyFormatter = new Intl.NumberFormat('ru-RU', {
-  style: 'currency',
-  currency: 'RUB'
-});
-
-const formatMoney = (value: number) => moneyFormatter.format(value);
 
 export default function PurchaseOrderForm({ onCancel, onSuccess }: PurchaseOrderFormProps) {
   const { token } = theme.useToken();
@@ -127,6 +121,8 @@ export default function PurchaseOrderForm({ onCancel, onSuccess }: PurchaseOrder
                 const item = items[field.name];
                 const total = (Number(item?.qty) || 0) * (Number(item?.price) || 0);
 
+                const selectedProduct = products.find(product => product.id === item?.product_id);
+
                 return (
                   <Card
                     key={field.key}
@@ -153,7 +149,13 @@ export default function PurchaseOrderForm({ onCancel, onSuccess }: PurchaseOrder
                       <Select
                         showSearch={{ optionFilterProp: 'label' }}
                         placeholder="Выберите товар"
-                        options={products.map(p => ({ value: p.id, label: p.name }))}
+                        options={products.map(p => ({
+                          value: p.id,
+                          label: p.name,
+                          disabled: items.some(
+                            (item, index) => index !== field.name && item?.product_id === p.id
+                          )
+                        }))}
                       />
                     </Form.Item>
 
@@ -178,7 +180,7 @@ export default function PurchaseOrderForm({ onCancel, onSuccess }: PurchaseOrder
                             min={1}
                             precision={0}
                             placeholder="0"
-                            suffix="шт."
+                            suffix={selectedProduct?.unit}
                             style={{ width: '100%' }}
                           />
                         </Form.Item>
@@ -193,11 +195,11 @@ export default function PurchaseOrderForm({ onCancel, onSuccess }: PurchaseOrder
                           name={[field.name, 'price']}
                           rules={[
                             { required: true, message: 'Введите цену' },
-                            { type: 'number', min: 0.01, message: 'Должна быть больше нуля' }
+                            { type: 'number', min: 0, message: 'Цена не может быть отрицательной' }
                           ]}
                         >
                           <InputNumber
-                            min={0.01}
+                            min={0}
                             precision={2}
                             step={0.01}
                             placeholder="Цена за единицу"

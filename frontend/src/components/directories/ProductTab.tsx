@@ -1,12 +1,14 @@
 import { useProducts } from '@/hooks/useProducts';
 import { useSuppliers } from '@/hooks/useSuppliers';
-import { Alert, Button, Flex, Input, message, Modal, Table, Tag, Typography } from 'antd';
+import { Alert, Button, Flex, Input, Modal, Table, Tag, Typography } from 'antd';
 import { useMemo, useState } from 'react';
 
+import EditProductForm from '@/components/directories/EditProductForm';
 import ProductForm from '@/components/directories/ProductForm';
 import { EMPTY_PRODUCTS } from '@/constants/products';
 import { EMPTY_SUPPLIERS } from '@/constants/suppliers';
 import type { Product } from '@/types/product';
+import { formatMoney } from '@/utils/money';
 import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 
@@ -18,6 +20,8 @@ export default function ProductTab() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [search, setSearch] = useState('');
+
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   const products = productsQuery.data ?? EMPTY_PRODUCTS;
   const suppliers = suppliersQuery.data ?? EMPTY_SUPPLIERS;
@@ -55,9 +59,18 @@ export default function ProductTab() {
       title: 'Минимальный остаток',
       dataIndex: 'min_level',
       key: 'min_level',
+      width: 50,
       align: 'right',
       sorter: (a, b) => a.min_level - b.min_level,
       render: (value: number) => numberFormatter.format(value)
+    },
+    {
+      title: 'Цена',
+      dataIndex: 'selling_price',
+      key: 'selling_price',
+      render: (price: string | null) => (
+        <Typography.Text>{price === null ? '—' : formatMoney(price)} </Typography.Text>
+      )
     },
     {
       title: 'Поставщик',
@@ -80,6 +93,13 @@ export default function ProductTab() {
       onFilter: (value, product) => product.is_active === value,
       render: (isActive: boolean) => (
         <Tag color={isActive ? 'green' : 'red'}>{isActive ? 'Активен' : 'Неактивен'}</Tag>
+      )
+    },
+    {
+      title: 'Действия',
+      key: 'actions',
+      render: (_: unknown, product: Product) => (
+        <Button onClick={() => setEditingProduct(product)}>Редактировать</Button>
       )
     }
   ];
@@ -170,9 +190,25 @@ export default function ProductTab() {
           onCancel={() => setIsModalOpen(false)}
           onSuccess={() => {
             setIsModalOpen(false);
-            message.success('Товар создан');
           }}
         />
+      </Modal>
+
+      <Modal
+        title="Редактировать товар"
+        open={editingProduct !== null}
+        footer={false}
+        destroyOnHidden
+        onCancel={() => setEditingProduct(null)}
+      >
+        {editingProduct !== null && (
+          <EditProductForm
+            key={editingProduct.id}
+            product={editingProduct}
+            onCancel={() => setEditingProduct(null)}
+            onSuccess={() => setEditingProduct(null)}
+          />
+        )}
       </Modal>
     </Flex>
   );

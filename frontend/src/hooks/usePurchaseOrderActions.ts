@@ -21,7 +21,10 @@ export function usePurchaseOrderActions() {
   const receiveMutation = useMutation({
     mutationFn: receivePurchaseOrder,
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['purchase-orders'] });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['purchase-orders'] }),
+        queryClient.invalidateQueries({ queryKey: ['stock'] })
+      ]);
 
       message.success('Закупка принята на склад');
     },

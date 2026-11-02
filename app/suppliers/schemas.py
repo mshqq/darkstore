@@ -14,6 +14,15 @@ class SupplierCreate(BaseModel):
     email: EmailStr | None = None
 
 
+class SupplierUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=255)
+    inn: str | None = Field(pattern=r"^\d{10}(\d{2})?$")
+    contact_person: str | None = Field(default=None, min_length=1, max_length=255)
+    address: str | None = Field(default=None, min_length=1, max_length=255)
+    phone: str | None = Field(default=None, min_length=5, max_length=32)
+    email: EmailStr | None = None
+
+
 class SupplierRead(BaseModel):
     id: int
     name: str
@@ -30,15 +39,33 @@ class SupplierRead(BaseModel):
 
 class ProductCreate(BaseModel):
     name: str = Field(min_length=1, max_length=255)
+    description: str | None = Field(default=None, max_length=2000)
+    selling_price: Decimal | None = Field(
+        default=None, gt=Decimal(0), max_digits=10, decimal_places=2
+    )
     sku: str = Field(min_length=1, max_length=64)
     unit: Unit = Unit.PIECE
     min_level: int = Field(ge=0, default=0)
     default_supplier_id: int | None = Field(default=None, gt=0)
 
 
+class ProductUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=255)
+    description: str | None = Field(default=None, max_length=2000)
+    selling_price: Decimal | None = Field(
+        default=None, gt=Decimal(0), max_digits=10, decimal_places=2
+    )
+    sku: str | None = Field(default=None, min_length=1, max_length=64)
+    min_level: int | None = Field(default=None, ge=0)
+    default_supplier_id: int | None = Field(default=None, gt=0)
+
+
 class ProductRead(BaseModel):
     id: int
     name: str
+    description: str | None
+    image_url: str | None
+    selling_price: Decimal | None
     sku: str
     unit: Unit
     min_level: int
@@ -66,7 +93,7 @@ class StockRead(BaseModel):
 class OrderItemIn(BaseModel):
     product_id: int = Field(gt=0)
     qty: int = Field(gt=0)
-    price: Decimal = Field(ge=0, decimal_places=2)
+    price: Decimal = Field(gt=Decimal(0), max_digits=10, decimal_places=2)
 
 
 class OrderItemRead(BaseModel):

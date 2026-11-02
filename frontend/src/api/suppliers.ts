@@ -1,5 +1,5 @@
 import apiClient from '@/api/client';
-import type { Supplier, SupplierCreate } from '@/types/supplier';
+import type { Supplier, SupplierCreate, SupplierUpdate } from '@/types/supplier';
 import axios from 'axios';
 
 export async function getSuppliers(): Promise<Supplier[]> {
@@ -16,5 +16,10 @@ export async function getSuppliers(): Promise<Supplier[]> {
 
 export async function createSupplier(data: SupplierCreate): Promise<Supplier> {
   const response = await apiClient.post<Supplier>('/suppliers', data);
+  return response.data;
+}
+
+export async function updateSupplier(supplierId: number, data: SupplierUpdate): Promise<Supplier> {
+  const response = await apiClient.patch<Supplier>(`/suppliers/${supplierId}`, data);
   return response.data;
 }

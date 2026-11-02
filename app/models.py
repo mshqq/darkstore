@@ -61,6 +61,10 @@ class Product(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
 
     name: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    image_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+
+    selling_price: Mapped[Decimal | None] = mapped_column(Numeric(10, 2), nullable=True)
 
     sku: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
     unit: Mapped[Unit] = mapped_column(
@@ -99,6 +103,7 @@ class Product(Base):
             "min_level >= 0",
             name="ck_products_min_level_non_negative",
         ),
+        CheckConstraint("selling_price > 0", name="ck_products_selling_price_positive"),
     )
 
 

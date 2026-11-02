@@ -36,8 +36,11 @@ app.add_middleware(
 
 app.mount("/static", StaticFiles(directory=settings.static_dir), name="static")
 
-for router in (products_router, stock_router, suppliers_router, orders_router):
-    app.include_router(router)
+
+app.include_router(products_router)
+app.include_router(stock_router)
+app.include_router(suppliers_router)
+app.include_router(orders_router)
 
 
 @app.get("/")

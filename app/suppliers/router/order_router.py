@@ -2,6 +2,7 @@ from database import DbSession
 from fastapi import APIRouter, status
 from models import PurchaseOrder
 from starlette.status import HTTP_200_OK
+
 from suppliers.schemas import PurchaseOrderCreate, PurchaseOrderRead
 from suppliers.services import order_service
 
@@ -11,6 +12,11 @@ router = APIRouter(prefix="/api/purchase-orders", tags=["purchase-orders"])
 @router.get("", response_model=list[PurchaseOrderRead], status_code=status.HTTP_200_OK)
 def get_orders(db: DbSession) -> list[PurchaseOrder]:
     return order_service.list_orders(db)
+
+
+@router.get("/{order_id}", response_model=PurchaseOrderRead)
+def get_order(order_id: int, db: DbSession) -> PurchaseOrder:
+    return order_service.get_order(db, order_id)
 
 
 @router.post("", response_model=PurchaseOrderRead, status_code=status.HTTP_201_CREATED)

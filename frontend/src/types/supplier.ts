@@ -5,9 +5,9 @@ export type Supplier = {
   contact_person: string;
   address: string;
   phone: string;
-  email?: string;
+  email: string | null;
   is_active: boolean;
-  created_at: Date;
+  created_at: string;
 };
 
 export type SupplierCreate = {
@@ -17,4 +17,13 @@ export type SupplierCreate = {
   address: string;
   phone: string;
   email: string | null;
+};
+
+export type SupplierUpdate = {
+  name?: string;
+  inn?: string;
+  contact_person?: string;
+  address?: string;
+  phone?: string;
+  email?: string | null;
 };

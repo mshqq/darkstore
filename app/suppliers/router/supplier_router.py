@@ -1,7 +1,8 @@
 from database import DbSession
 from fastapi import APIRouter, status
 from models import Supplier
-from suppliers.schemas import SupplierCreate, SupplierRead
+
+from suppliers.schemas import SupplierCreate, SupplierRead, SupplierUpdate
 from suppliers.services import supplier_service
 
 router = APIRouter(prefix="/api/suppliers", tags=["suppliers"])
@@ -15,3 +16,10 @@ def get_suppliers(db: DbSession, include_inactive: bool = False) -> list[Supplie
 @router.post("", response_model=SupplierRead, status_code=status.HTTP_201_CREATED)
 def create_supplier(data: SupplierCreate, db: DbSession) -> Supplier:
     return supplier_service.create_supplier(db, data)
+
+
+@router.patch(
+    "/{supplier_id}", response_model=SupplierRead, status_code=status.HTTP_200_OK
+)
+def update_supplier(supplier_id: int, data: SupplierUpdate, db: DbSession) -> Supplier:
+    return supplier_service.update_supplier(db, supplier_id, data)

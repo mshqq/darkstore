@@ -6,6 +6,8 @@ services:
     container_name: darkstore_api
     ports:
       - '127.0.0.1:8000:8000'
+    volumes:
+      - darkstore_images:/app/static/images
     environment:
       DATABASE_URL: 'postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}'
     depends_on:
@@ -33,3 +35,4 @@ services:
 
 volumes:
   darkstore_data:
+  darkstore_images:

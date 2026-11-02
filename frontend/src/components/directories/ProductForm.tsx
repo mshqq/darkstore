@@ -19,6 +19,8 @@ import {
   Select
 } from 'antd';
 
+type ProductFormValues = Omit<ProductCreate, 'selling_price'> & { selling_price: number };
+
 type ProductFormProps = {
   onCancel: () => void;
   onSuccess: () => void;
@@ -27,7 +29,7 @@ type ProductFormProps = {
 const unitOptions = Object.entries(UNITS).map(([key, value]) => ({ value, key }));
 
 export default function ProductForm({ onCancel, onSuccess }: ProductFormProps) {
-  const [form] = Form.useForm<ProductCreate>();
+  const [form] = Form.useForm<ProductFormValues>();
   const queryClient = useQueryClient();
   const { message } = App.useApp();
 
@@ -36,7 +38,10 @@ export default function ProductForm({ onCancel, onSuccess }: ProductFormProps) {
   const mutation = useMutation({
     mutationFn: createProduct,
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['products'] });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['products'] }),
+        queryClient.invalidateQueries({ queryKey: ['stock'] })
+      ]);
 
       message.success('Товар добавлен');
       onSuccess();
@@ -48,14 +53,15 @@ export default function ProductForm({ onCancel, onSuccess }: ProductFormProps) {
 
   const suppliers = suppliersQuery.data ?? EMPTY_SUPPLIERS;
 
-  const handleSubmit = (values: ProductCreate) => {
+  const handleSubmit = (values: ProductFormValues) => {
     mutation.mutate({
       ...values,
+      selling_price: values.selling_price.toFixed(2),
       default_supplier_id: values.default_supplier_id || null
     });
   };
   return (
-    <Form<ProductCreate>
+    <Form<ProductFormValues>
       form={form}
       layout="vertical"
       requiredMark="optional"
@@ -137,6 +143,29 @@ export default function ProductForm({ onCancel, onSuccess }: ProductFormProps) {
       >
         <InputNumber
           min={0}
+          style={{ width: '100%' }}
+        />
+      </Form.Item>
+
+      <Form.Item
+        label="Розничная цена"
+        name="selling_price"
+        rules={[
+          { required: true, message: 'Введите розничную цену' },
+          {
+            type: 'number',
+            min: 0.01,
+            max: 99999999.99,
+            message: 'Введите цену от 0,01 до 99 999 999,99'
+          }
+        ]}
+      >
+        <InputNumber
+          min={0.01}
+          max={99999999.99}
+          suffix="₽"
+          step={0.01}
+          precision={2}
           style={{ width: '100%' }}
         />
       </Form.Item>

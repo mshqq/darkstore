@@ -14,6 +14,11 @@ export async function getPurchaseOrders(): Promise<PurchaseOrder[]> {
   }
 }
 
+export async function getPurchaseOrder(orderId: number): Promise<PurchaseOrder> {
+  const res = await apiClient.get<PurchaseOrder>(`/purchase-orders/${orderId}`);
+  return res.data;
+}
+
 export async function sendPurchaseOrder(order_id: number): Promise<PurchaseOrder> {
   const res = await apiClient.post<PurchaseOrder>(`/purchase-orders/${order_id}/send`);
   return res.data;

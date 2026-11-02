@@ -4,6 +4,7 @@ import ruRU from 'antd/locale/ru_RU';
 import { lazy } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
+const OrderPage = lazy(() => import('@/pages/OrderPage'));
 const StockPage = lazy(() => import('@/pages/StockPage'));
 const DirectoriesPage = lazy(() => import('@/pages/DirectoriesPage'));
 const OrdersPage = lazy(() => import('@/pages/OrdersPage'));
@@ -45,6 +46,10 @@ export default function App() {
               <Route
                 path="/orders"
                 element={<OrdersPage />}
+              />
+              <Route
+                path="/orders/:id"
+                element={<OrderPage />}
               />
             </Route>
           </Routes>
