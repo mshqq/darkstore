@@ -1,21 +1,14 @@
-from contextlib import asynccontextmanager
-
+from auth import router as auth
 from config import settings
-from database import init_db
 from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from suppliers.router.order_router import router as orders_router
-from suppliers.router.product_router import router as products_router
-from suppliers.router.stock_router import router as stock_router
-from suppliers.router.supplier_router import router as suppliers_router
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    init_db()
-    yield
-
+from inventory import router as inventory
+from orders import router as orders
+from products import router as products
+from purchasing import router as purchasing
+from sales import router as sales
+from suppliers import router as suppliers
 
 app = FastAPI(
     title=settings.app_name,
@@ -23,7 +16,6 @@ app = FastAPI(
     debug=settings.debug,
     docs_url="/api/docs",
     redoc_url="/api/redoc",
-    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -37,10 +29,13 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory=settings.static_dir), name="static")
 
 
-app.include_router(products_router)
-app.include_router(stock_router)
-app.include_router(suppliers_router)
-app.include_router(orders_router)
+app.include_router(products.router)
+app.include_router(inventory.router)
+app.include_router(sales.router)
+app.include_router(purchasing.router)
+app.include_router(suppliers.router)
+app.include_router(orders.router)
+app.include_router(auth.router)
 
 
 @app.get("/")

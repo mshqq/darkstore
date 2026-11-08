@@ -9,6 +9,10 @@ class Settings(BaseSettings):
     app_name: str = "DarkStore API"
     debug: bool = False
 
+    secret_key: str
+    algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
+
     database_url: str
 
     cors_origins: list[str] = [
