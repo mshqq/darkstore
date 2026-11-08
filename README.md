@@ -25,6 +25,18 @@
 
 ![Учёт складских остатков](docs/screenshots/stock.png)
 
+Закупки: заказы поставщикам, их статусы и приёмка.
+
+![Список закупок у поставщиков](docs/screenshots/purchase-orders.png)
+
+Справочник товаров: номенклатура, цены и поставщики по умолчанию.
+
+![Справочник товаров](docs/screenshots/products.png)
+
+Справочник поставщиков: контакты, реквизиты и статус активности.
+
+![Справочник поставщиков](docs/screenshots/suppliers.png)
+
 ## Стек
 
 **Фронтенд:** React, TypeScript, Ant Design, React Router, TanStack Query, Axios, Vite.
