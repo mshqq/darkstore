@@ -1,6 +1,6 @@
-import { useSuppliers } from '@/hooks/useSuppliers';
-import { useUpdateProduct } from '@/hooks/useUpdateProduct';
-import { useUploadProductImage } from '@/hooks/useUploadProductImage';
+import { useUpdateProduct } from '@/hooks/products/useUpdateProduct';
+import { useSuppliers } from '@/hooks/suppliers/useSuppliers';
+import { useUploadProductImage } from '@/hooks/products/useUploadProductImage';
 import type { Product } from '@/types/product';
 import { Button, Flex, Form, Image, Input, InputNumber, Select } from 'antd';
 

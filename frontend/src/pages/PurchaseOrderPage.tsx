@@ -1,10 +1,10 @@
 import { EMPTY_PRODUCTS } from '@/constants/products';
 import { statusConfig } from '@/constants/purchaseOrder';
 import { EMPTY_SUPPLIERS } from '@/constants/suppliers';
-import { useProducts } from '@/hooks/useProducts';
-import { usePurchaseOrder } from '@/hooks/usePurchaseOrder';
-import { usePurchaseOrderActions } from '@/hooks/usePurchaseOrderActions';
-import { useSuppliers } from '@/hooks/useSuppliers';
+import { useProducts } from '@/hooks/products/useProducts';
+import { usePurchaseOrder } from '@/hooks/purchasing/usePurchaseOrder';
+import { usePurchaseOrderActions } from '@/hooks/purchasing/usePurchaseOrderActions';
+import { useSuppliers } from '@/hooks/suppliers/useSuppliers';
 import type { PurchaseOrderItem } from '@/types/purchaseOrder';
 import { formatMoney } from '@/utils/money';
 import { ArrowLeftOutlined } from '@ant-design/icons';
@@ -23,7 +23,7 @@ const formatDate = (value: string | null): string => {
   });
 };
 
-const OrderPage = () => {
+const PurchaseOrderPage = () => {
   const { id } = useParams();
   const orderId = Number(id);
   const orderQuery = usePurchaseOrder(orderId);
@@ -197,4 +197,4 @@ const OrderPage = () => {
   );
 };
 
-export default OrderPage;
+export default PurchaseOrderPage;

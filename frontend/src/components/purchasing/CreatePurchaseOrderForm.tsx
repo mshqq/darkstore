@@ -1,8 +1,8 @@
 import { EMPTY_PRODUCTS } from '@/constants/products';
 import { EMPTY_SUPPLIERS } from '@/constants/suppliers';
-import { useCreatePurchaseOrder } from '@/hooks/useCreatePurchaseOrder';
-import { useProducts } from '@/hooks/useProducts';
-import { useSuppliers } from '@/hooks/useSuppliers';
+import { useProducts } from '@/hooks/products/useProducts';
+import { useCreatePurchaseOrder } from '@/hooks/purchasing/useCreatePurchaseOrder';
+import { useSuppliers } from '@/hooks/suppliers/useSuppliers';
 import type { PurchaseOrderFormValues } from '@/types/purchaseOrder';
 import { formatMoney } from '@/utils/money';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';

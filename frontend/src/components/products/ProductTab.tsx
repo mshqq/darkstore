@@ -1,10 +1,10 @@
-import { useProducts } from '@/hooks/useProducts';
-import { useSuppliers } from '@/hooks/useSuppliers';
+import { useProducts } from '@/hooks/products/useProducts';
+import { useSuppliers } from '@/hooks/suppliers/useSuppliers';
 import { Alert, Button, Flex, Input, Modal, Table, Tag, Typography } from 'antd';
 import { useMemo, useState } from 'react';
 
-import EditProductForm from '@/components/directories/EditProductForm';
-import ProductForm from '@/components/directories/ProductForm';
+import EditProductForm from '@/components/products/EditProductForm';
+import ProductForm from '@/components/products/ProductForm';
 import { EMPTY_PRODUCTS } from '@/constants/products';
 import { EMPTY_SUPPLIERS } from '@/constants/suppliers';
 import type { Product } from '@/types/product';

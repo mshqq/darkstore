@@ -1,5 +1,5 @@
-import ProductTab from '@/components/directories/ProductTab';
-import SupplierTab from '@/components/directories/SupplierTab';
+import ProductTab from '@/components/products/ProductTab';
+import SupplierTab from '@/components/suppliers/SupplierTab';
 import { ShoppingOutlined, TeamOutlined } from '@ant-design/icons';
 import { Card, Flex, Tabs, Typography, type TabsProps } from 'antd';
 import { useSearchParams } from 'react-router-dom';

@@ -1,7 +1,7 @@
 import { createProduct } from '@/api/products';
 import { EMPTY_SUPPLIERS } from '@/constants/suppliers';
 import { UNITS } from '@/constants/units';
-import { useSuppliers } from '@/hooks/useSuppliers';
+import { useSuppliers } from '@/hooks/suppliers/useSuppliers';
 import type { ProductCreate } from '@/types/product';
 import { getApiErrorMessage } from '@/utils/apiError';
 import { useMutation, useQueryClient } from '@tanstack/react-query';

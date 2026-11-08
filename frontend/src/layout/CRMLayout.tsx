@@ -1,8 +1,11 @@
+import useLogout from '@/hooks/auth/useLogout';
 import {
   DatabaseOutlined,
   InboxOutlined,
+  LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  ProfileOutlined,
   ShopOutlined,
   ShoppingCartOutlined
 } from '@ant-design/icons';
@@ -17,14 +20,17 @@ const { Content, Sider } = Layout;
 const menuItems = [
   { key: '/stock', icon: <InboxOutlined />, label: 'Остатки' },
   { key: '/directories', icon: <DatabaseOutlined />, label: 'Справочники' },
-  { key: '/orders', icon: <ShoppingCartOutlined />, label: 'Закупки' }
+  { key: '/orders', icon: <ShoppingCartOutlined />, label: 'Закупки' },
+  { key: '/customer-orders', icon: <ProfileOutlined />, label: 'Заказы покупателей' }
 ] satisfies MenuProps['items'];
 
-export default function AppLayout() {
+export default function CRMLayout() {
   const { token } = theme.useToken();
   const location = useLocation();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+
+  const logout = useLogout();
 
   const activeItem = menuItems.find(
     item => location.pathname === item.key || location.pathname.startsWith(`${item.key}/`)
@@ -105,6 +111,20 @@ export default function AppLayout() {
               style={{ fontSize: 16 }}
             >
               {activeItem?.label}
+            </Typography.Text>
+          </Button>
+          <Button
+            type="text"
+            aria-label="Выйти"
+            icon={<LogoutOutlined />}
+            style={{ marginLeft: 'auto' }}
+            onClick={() => void logout()}
+          >
+            <Typography.Text
+              strong
+              style={{ fontSize: 16 }}
+            >
+              Выйти
             </Typography.Text>
           </Button>
         </Header>

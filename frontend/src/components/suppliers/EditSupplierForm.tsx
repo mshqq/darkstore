@@ -1,4 +1,4 @@
-import { useUpdateSupplier } from '@/hooks/useUpdateSupplier';
+import { useUpdateSupplier } from '@/hooks/suppliers/useUpdateSupplier';
 import type { Supplier } from '@/types/supplier';
 import { Button, Flex, Form, Input } from 'antd';
 

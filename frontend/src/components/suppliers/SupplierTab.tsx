@@ -1,7 +1,7 @@
-import EditSupplierForm from '@/components/directories/EditSupplierForm';
-import SupplierForm from '@/components/directories/SupplierForm';
+import EditSupplierForm from '@/components/suppliers/EditSupplierForm';
+import SupplierForm from '@/components/suppliers/SupplierForm';
 import { EMPTY_SUPPLIERS } from '@/constants/suppliers';
-import { useSuppliers } from '@/hooks/useSuppliers';
+import { useSuppliers } from '@/hooks/suppliers/useSuppliers';
 import type { Supplier } from '@/types/supplier';
 import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { Alert, Button, Flex, Input, Modal, Table, Tag, Typography } from 'antd';
