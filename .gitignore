@@ -20,6 +20,7 @@ backend/.env
 *.db
 *.sqlite
 *.sqlite3
+backups/
 
 # IDE
 .vscode/
